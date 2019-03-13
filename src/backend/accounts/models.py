@@ -52,6 +52,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     age = models.IntegerField()
+    slug = models.SlugField(max_length=200)
     profile_image = models.ImageField(upload_to='profile-images',blank=True,null=True)
     description = models.CharField(max_length=150, blank=True, null=True)
     hobbies = models.CharField(max_length=1000, blank=True, null=True)
