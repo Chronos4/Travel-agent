@@ -3,7 +3,9 @@ import React from 'react';
 
 const Navbar = (props) => {
     return (
-        <h2>rger</h2>
+        <div className="container text-right">
+            <h1 className="col-6">george</h1>
+        </div>
     );
 }
 
