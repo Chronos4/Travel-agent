@@ -6,7 +6,7 @@ from django.contrib.auth.models import (
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email=None, password=None, first_name=None, last_name=None, age=None, active=True, staff=False, admin=False):
+    def create_user(self, email, password, first_name, last_name, age, active=True, staff=False, admin=False):
         user_object = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
@@ -20,7 +20,7 @@ class UserManager(BaseUserManager):
         user_object.save(using=self._db)
         return user_object
 
-    def create_staffuser(self, *args):
+    def create_staffuser(self, email, password, first_name, last_name, age, active=True, staff=False, admin=False):
         user = self.create_user(
             email=email,
             password=password,
@@ -33,7 +33,7 @@ class UserManager(BaseUserManager):
         )
         return user
 
-    def create_superuser(self, *args):
+    def create_superuser(self, email, password, first_name, last_name, age, active=True, staff=False, admin=False):
         user = self.create_user(
             email=email,
             password=password,
@@ -53,7 +53,8 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=150)
     age = models.IntegerField()
     slug = models.SlugField(max_length=200)
-    profile_image = models.ImageField(upload_to='profile-images',blank=True,null=True)
+    profile_image = models.ImageField(
+        upload_to='profile-images', blank=True, null=True)
     description = models.CharField(max_length=150, blank=True, null=True)
     hobbies = models.CharField(max_length=1000, blank=True, null=True)
     places_been = models.TextField(blank=True, null=True)
