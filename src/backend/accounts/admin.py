@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
         ('Username email', {
          'fields': ('email', 'password', 'timestamp', 'updated')}),
         ('Personal_info', {
-         'fields': ('first_name', 'last_name', 'age', 'slug')}),
+         'fields': ('first_name', 'last_name', 'age', 'gender', 'slug')}),
         ('Other Info', {'fields': ('hobbies',
                                    'description', 'places_been', 'places_to')}),
         ('Permissions', {'fields': ('admin', 'staff', 'active',)})

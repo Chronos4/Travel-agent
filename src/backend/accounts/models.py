@@ -49,12 +49,20 @@ class UserManager(BaseUserManager):
         return user
 
 
+gender_choices = [
+    ('male', 'Male'),
+    ('female', 'Female')
+]
+
+
 class User(AbstractBaseUser):
     email = models.EmailField(max_length=150, unique=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     age = models.DateField()
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200, blank=True, null=True)
+    gender = models.CharField(
+        max_length=150, choices=gender_choices, blank=True, null=True)
     profile_image = models.ImageField(
         upload_to='profile-images', blank=True, null=True)
     description = models.CharField(max_length=150, blank=True, null=True)
@@ -71,7 +79,6 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'age']
 
     objects = UserManager()
-    
 
     def __str__(self):
         return f'{self.email}--{self.last_name}--{self.first_name}'

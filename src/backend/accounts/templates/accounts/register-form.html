@@ -1,0 +1,17 @@
+{% extends 'base-template.html' %}
+{% load static %}
+
+{% block title %}
+Register An Account
+{% endblock title%}
+
+
+{% block content %}
+<div class="simple-form">
+    <form id="registration" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button id="register-button">Submit</button>
+    </form>
+</div>
+{% endblock content %}
