@@ -6,7 +6,9 @@ from django.contrib.auth.models import (
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, first_name, last_name, age, active=True, staff=False, admin=False):
+    def create_user(self, email, password=None, first_name=None, last_name=None, age=None, active=True, staff=False, admin=False):
+        if email is None or password is None or first_name is None or last_name is None or age is None:
+            raise ValueError('error none values my friend')
         user_object = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
@@ -20,7 +22,7 @@ class UserManager(BaseUserManager):
         user_object.save(using=self._db)
         return user_object
 
-    def create_staffuser(self, email, password, first_name, last_name, age, active=True, staff=False, admin=False):
+    def create_staffuser(self, email, password=None, first_name=None, last_name=None, age=None):
         user = self.create_user(
             email=email,
             password=password,
@@ -33,7 +35,7 @@ class UserManager(BaseUserManager):
         )
         return user
 
-    def create_superuser(self, email, password, first_name, last_name, age, active=True, staff=False, admin=False):
+    def create_superuser(self, email, password=None, first_name=None, last_name=None, age=None):
         user = self.create_user(
             email=email,
             password=password,
@@ -66,7 +68,7 @@ class User(AbstractBaseUser):
     updated = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'age']
 
     objects = UserManager()
 
@@ -78,3 +80,15 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+    @property
+    def is_staff(self):
+        return self.staff
+
+    @property
+    def is_admin(self):
+        return self.admin
+
+    @property
+    def is_active(self):
+        return self.active
