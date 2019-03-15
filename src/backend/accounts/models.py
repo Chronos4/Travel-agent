@@ -53,7 +53,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=150, unique=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    age = models.IntegerField()
+    age = models.DateField()
     slug = models.SlugField(max_length=200)
     profile_image = models.ImageField(
         upload_to='profile-images', blank=True, null=True)
@@ -71,6 +71,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'age']
 
     objects = UserManager()
+    
 
     def __str__(self):
         return f'{self.email}--{self.last_name}--{self.first_name}'
