@@ -1,11 +1,7 @@
-/* body{
-  background-image:url();
-  background-repeat : no-repeat;
-  background-size:100% 700px;
-} */
+
 .simple-form{
   text-align:center;
-  margin: 100px 500px;
+  margin: 50px 500px;
 }
 
 #registration{
@@ -38,4 +34,5 @@
 }
 #register-button:hover{
   background-color:rgb(0, 153, 255);
+  color:white;
 }

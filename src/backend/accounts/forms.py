@@ -1,7 +1,7 @@
 import datetime
 from django import forms
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 User = get_user_model()
 
@@ -9,6 +9,8 @@ choices_gender = (
     ('male', 'Male'),
     ('female', 'Female')
 )
+
+YEARS = [x for x in range(1950, 2010)]
 
 
 class RegisterForm(forms.ModelForm):
@@ -22,14 +24,14 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'age', 'gender')
-
         widgets = {
             'email': forms.EmailInput(attrs={'placeholder': 'Enter your Email', 'id': 'register-staff'}),
             'first_name': forms.TextInput(attrs={'placeholder': 'Enter your First Name', 'id': 'register-staff'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Enter your Last Name', 'id': 'register-staff'}),
-            'age': forms.TextInput(attrs={'id': 'register-staff'}),
+            'age': forms.SelectDateWidget(attrs={'id': 'register-staff'}, years=YEARS),
             'gender': forms.Select(attrs={'id': 'register-gender'})
         }
+        labels = {}
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -93,3 +95,26 @@ class UserAdminCreateForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(
+        attrs={'id': 'register-staff', 'placeholder': 'Enter your email'}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'id': 'register-staff', 'placeholder': '************'}))
+
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        request = self.request
+        data = self.cleaned_data
+        email = data.get("email")
+        password = data.get("password")
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            raise forms.ValidationError("Invalid credentials")
+        login(request, user)
+        self.user = user
+        return data

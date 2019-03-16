@@ -38,12 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd apps
+    'crispy_forms',
+
     # my apps
     'accounts',
 
 
 ]
 
+CRISPY_TEMPLATE_PACK = 'uni_form'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
