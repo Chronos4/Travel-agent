@@ -11,7 +11,8 @@
                     <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="fas fa-globe-africa"></i> Destinations</a>
+                <a class="nav-link" href="{% url 'destination-list' %}"><i class="fas fa-globe-africa"></i>
+                    Destinations</a>
             </li>
             {% if not request.user.is_authenticated %}
             <li class="nav-item">
