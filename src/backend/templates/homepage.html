@@ -1,0 +1,23 @@
+{% extends 'base-template.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+    <div class="col-12">
+        <div class="videoContainer hide-for-small-only">
+            <div class="overlay"></div>
+            <video autoplay loop muted>
+                <source src="{% static 'imgs/travel-video.mp4' %}" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</div>
+
+<div class="jumbotron text-center">
+    <h1 class="display-4">Search-find-meet and participate in Adventures</h1>
+    <hr class="my-4">
+    <p>Search all available trips and travel to have fun with foreign friends </p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg" href="#" role="button">Check Destinations</a>
+    </p>
+</div>
+{% endblock %}

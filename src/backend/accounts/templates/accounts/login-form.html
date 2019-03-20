@@ -6,15 +6,20 @@ Sign In
 {% endblock title%}
 
 {% block content %}
-<h1 class="text-center my-4">Sign In</h1>
-<div class="container text-center">
-    <div class="col-lg-6 col-md-6 mx-auto col-sm-12">
-        <hr>
-        <form id="registration" method="POST">
-            {% csrf_token %}
-            {{form.as_p}}
-            <button id="register-button">Login</button>
-        </form>
+<div class="container text-center" id="registerform">
+    <h1 class="text-center my-4">Sign In</h1>
+    <div class="container text-center">
+        <div class="col-lg-6 col-md-6 mx-auto col-sm-12">
+            <hr>
+            <form id="registration" method="POST">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button class="btn btn-outline-success">Login</button>
+                <a class="btn btn-outline-primary" href="{% url 'register' %}">Register An account</a>
+            </form>
+        </div>
     </div>
 </div>
+
+
 {% endblock content %}

@@ -14,7 +14,8 @@ Register An Account
         <form id="registration" method="POST">
             {% csrf_token %}
             {{form.as_p}}
-            <button id="register-button">Submit</button>
+            <button class="btn btn-outline-success">Submit</button>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary">Sign in</a>
         </form>
     </div>
 </div>

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager
 )
+from django.db.models.signals import pre_save
+from backend.utilities import unique_slug_generator
 # Create your models here.
 
 
@@ -100,3 +102,11 @@ class User(AbstractBaseUser):
     @property
     def is_active(self):
         return self.active
+
+
+def slug_create(sender, instance, *args, **kwargs):
+    if instance:
+        instance.slug = unique_slug_generator(instance)
+
+
+pre_save.connect(slug_create, sender=User)

@@ -16,10 +16,10 @@ YEARS = [x for x in range(1950, 2010)]
 class RegisterForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(
-        attrs={'placeholder': '**********', 'id': 'register-staff'}))
+    password = forms.CharField(label='', widget=forms.PasswordInput(
+        attrs={'placeholder': 'Password', 'id': 'register-staff'}))
     password2 = forms.CharField(
-        label='Password confirmation', widget=forms.PasswordInput(attrs={'placeholder': '**********', 'id': 'register-staff'}))
+        label='', widget=forms.PasswordInput(attrs={'placeholder': 'Password Confirmation', 'id': 'register-staff'}))
 
     class Meta:
         model = User
@@ -31,7 +31,17 @@ class RegisterForm(forms.ModelForm):
             'age': forms.SelectDateWidget(attrs={'id': 'register-staff'}, years=YEARS),
             'gender': forms.Select(attrs={'id': 'register-gender'})
         }
-        labels = {}
+        labels = {
+            "email": '',
+            "first_name": '',
+            "last_name": '',
+            "age": '',
+            "gender": ''
+
+        }
+        initial = {
+            'gender': 'male'
+        }
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -98,10 +108,10 @@ class UserAdminCreateForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(label='Email', widget=forms.EmailInput(
+    email = forms.EmailField(label='', widget=forms.EmailInput(
         attrs={'id': 'register-staff', 'placeholder': 'Enter your email'}))
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'id': 'register-staff', 'placeholder': '************'}))
+    password = forms.CharField(label='',
+                               widget=forms.PasswordInput(attrs={'id': 'register-staff', 'placeholder': 'Password'}))
 
     def __init__(self, request, *args, **kwargs):
         self.request = request
