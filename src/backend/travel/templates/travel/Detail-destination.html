@@ -1,17 +1,52 @@
 {% extends 'base-template.html' %}
 
 {% block title %}
-Travel to {{object.country}}
+Travel to {{object.country|capfirst}}
 {% endblock title%}
 
 
 
 {% block content %}
-
-<div class="container my-4">
-    <img src='{{object.image.url}}'>
+<div class="row my-4">
+    <h3 class="mx-auto">An Adventure to <span style="color:red">{{object.country|capfirst}}</span></h3>
+</div>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-sm-12 col-lg-4">
+            <img class="card-img-top shadow-lg" src='{{object.image.url}}'>
+        </div>
+        <div class="col-sm-12 col-lg-4 mx-auto my-4">
+            <h1 class="display-5 text-center">Participate</h1>
+            <p>The trip organised by <a href="#"><strong>{{object.author.full_name|capfirst}}</strong></a></p>
+            <p class="lead">Starts at : {{object.start}} <br> Ends at : {{object.end}}</p>
+            <div class="row">
+                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto" href='#'>Participate</a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container my-5">
+    <div class="row text-center">
+        <div class="col-lg-6 col-sm-12">
+            <h2>People interested for this trip</h2>
+            <hr>
+            {% for person in object.users.all %}
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">{{person.full_name}}</a>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-lg-4 col-sm-12 mx-3 my-4">
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap
+                into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the
+                release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
+                software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        </div>
+    </div>
 </div>
 
-<div></div>
 
 {% endblock content %}

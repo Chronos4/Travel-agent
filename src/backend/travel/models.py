@@ -4,6 +4,7 @@ from django.db.models.signals import pre_save
 from backend.utilities import unique_id_generator
 import datetime
 from django.urls import reverse
+import pycountry
 # Create your models here.
 
 User = settings.AUTH_USER_MODEL
@@ -19,14 +20,16 @@ continent_choices = [
     ('australia', 'Australia'),
 ]
 
+countries = [(x.name, x.name) for x in pycountry.countries]
+
 
 class Adventure(models.Model):
     unique_id = models.CharField(max_length=150, blank=True, null=True)
     users = models.ManyToManyField(User, related_name="candidates")
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="author", blank=True, null=True)
-    continent = models.CharField(max_length=150, choices=continent_choices)
-    country = models.CharField(max_length=150)
+    # continent = models.CharField(max_length=150, choices=continent_choices)
+    country = models.CharField(max_length=150, choices=countries)
     image = models.ImageField(upload_to='destinations', blank=True, null=True)
     town = models.CharField(max_length=150)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -47,3 +50,12 @@ def create_id(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(create_id, sender=Adventure)
+
+
+def check_timezones(sender, instance, *args, **kwargs):
+    if instance:
+        if instance.start < datetime.datetime.now().date():
+            raise ValueError('An error occured check the date')
+
+
+pre_save.connect(check_timezones, sender=Adventure)

@@ -29,7 +29,7 @@ class RegisterForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'placeholder': 'Enter your First Name', 'id': 'register-staff'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Enter your Last Name', 'id': 'register-staff'}),
             'age': forms.SelectDateWidget(attrs={'id': 'register-staff'}, years=YEARS),
-            'gender': forms.Select(attrs={'id': 'register-gender', 'value': 'male'})
+            'gender': forms.Select(attrs={'id': 'register-gender'})
         }
         labels = {
             "email": '',

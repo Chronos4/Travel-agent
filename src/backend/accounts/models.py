@@ -109,7 +109,8 @@ class User(AbstractBaseUser):
 
 def slug_create(sender, instance, *args, **kwargs):
     if instance:
-        instance.slug = unique_slug_generator(instance)
+        if instance.slug is None:
+            instance.slug = unique_slug_generator(instance)
 
 
 pre_save.connect(slug_create, sender=User)
