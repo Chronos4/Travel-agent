@@ -63,7 +63,7 @@ ROOT_URLCONF = 'backend.urls'
 
 # MY CHANGES
 AUTH_USER_MODEL = 'accounts.user'
-LOGIN_URL = '/login/'
+LOGIN_URL = 'login'
 LOGIN_URL_REDIRECT = '/'
 LOGOUT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
