@@ -18,7 +18,7 @@ Available destinations
                 {% endif %}
                 <div class="card-body">
                     <h5>Travel to <span style="color:red;">{{object.country|capfirst}}</span></h5>
-                    <h6 class="card-text">Organiser: {{object.author.full_name|capfirst}}</h6>
+                    <h6 class="card-text">Organiser: <a href="#">{{object.author.full_name|capfirst}}</a></h6>
                     <p class="card-text">Posted: {{object.timestamp|timesince}} ago</p>
                     <hr>
                     <p class="card-text">Starts at : {{object.start}}</p>
