@@ -19,8 +19,17 @@ Travel to {{object.country|capfirst}}
             <h1 class="display-5 text-center">Participate</h1>
             <p>The trip organised by <a href="#"><strong>{{object.author.full_name|capfirst}}</strong></a></p>
             <p class="lead">Starts at : {{object.start}} <br> Ends at : {{object.end}}</p>
-            <div class="row">
-                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto" href='#'>Participate</a>
+            <div class="row text-center">
+                {% if object.author == request.user %}
+                <div class="col-lg-4 col-sm-12 mt-5">
+                    <h5>You posted this trip!</h5>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <a class="btn btn-outline-secondary btn-lg my-5 mx-auto" href='#'>Process the trip</a>
+                </div>
+                {% else %}
+                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto" href='#'>Join to this adventure</a>
+                {% endif %}
             </div>
         </div>
     </div>
