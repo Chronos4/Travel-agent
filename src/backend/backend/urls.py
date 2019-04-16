@@ -25,6 +25,7 @@ urlpatterns = [
     path('destinations/', include('travel.urls')),
     path('superapi/destinations/', include('travel.api.urls')),
     path('account/', include('accounts.urls')),
+    path('profiles/', include('profiles.urls'))
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + \

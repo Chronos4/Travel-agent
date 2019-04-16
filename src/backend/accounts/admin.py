@@ -12,7 +12,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ['__str__', 'slug', 'active', 'staff', 'admin', 'timestamp']
     ordering = ('-timestamp',)
     list_filter = ('staff', 'admin', 'active',)
-    search_fields = ['email', 'slug', 'hobbies', 'description']
+    search_fields = ['email', 'slug']
     form = UserAdminChangeForm
     add_form = UserAdminCreateForm
     readonly_fields = ('timestamp', 'updated')
@@ -20,9 +20,7 @@ class UserAdmin(BaseUserAdmin):
         ('Username email', {
          'fields': ('email', 'password', 'timestamp', 'updated')}),
         ('Personal_info', {
-         'fields': ('first_name', 'last_name', 'age', 'gender', 'slug', 'profile_image')}),
-        ('Other Info', {'fields': ('hobbies',
-                                   'description', 'places_been', 'places_to')}),
+         'fields': ('first_name', 'last_name', 'age', 'gender', 'slug')}),
         ('Permissions', {'fields': ('admin', 'staff', 'active',)})
     ]
 
