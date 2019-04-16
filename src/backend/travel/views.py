@@ -31,6 +31,14 @@ class DetailDestinationView(DetailView):
             raise Http404('An error has occured')
         return instance
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(DetailDestinationView,
+                        self).get_context_data(*args, **kwargs)
+        query = self.object.users.all().exclude(
+            email=self.object.author.email)
+        context['users'] = query
+        return context
+
 
 def AdventureJoin(request, unique_id):
     if request.user.is_authenticated:
@@ -43,7 +51,7 @@ def AdventureJoin(request, unique_id):
                     obj.users.add(request.user)
                     messages.success(request, 'You successfully enrolled')
                 elif request.user in filt:
-                    messages.info(
+                    messages.warning(
                         request, 'You successfully canceled the registration')
                     obj.users.remove(request.user)
     else:

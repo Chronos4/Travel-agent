@@ -18,8 +18,8 @@ Travel to {{object.country|capfirst}}
     <div class="alert alert-success" role="alert">
         {{message}}
     </div>
-    {% elif message.tags == 'info' %}
-    <div class="alert alert-info" role="alert">
+    {% elif message.tags == 'warning' %}
+    <div class="alert alert-warning" role="alert">
         {{message}}
     </div>
     {% endif %}
@@ -49,15 +49,15 @@ Travel to {{object.country|capfirst}}
             <div class="row text-center">
                 <a class="btn btn-outline-secondary btn-lg my-5 mx-auto px-5" href='#'>Process the trip</a>
                 {% else %}
-                {% if request.user in object.users.all %}
-                <h4>You already are enrolled here</h4>
-                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto"
-                    href='{% url "adventure-join"  unique_id=object.unique_id %}'>Cancel
-                    Registration</a>
-                {% else %}
-                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto"
-                    href='{% url "adventure-join"  unique_id=object.unique_id %}'>Join to this adventure</a>
-                {% endif %}
+                <form method="POST" action='{% url "adventure-join"  unique_id=object.unique_id %}'>
+                    {% csrf_token %}
+                    {% if request.user in object.users.all %}
+                    <h4>You already are enrolled here</h4>
+                    <button class="btn btn-outline-secondary btn-lg my-5 mx-auto">Cancel Registration</button>
+                    {% else %}
+                    <button class="btn btn-outline-secondary btn-lg my-5 mx-auto">Join to this adventure</button>
+                    {% endif %}
+                </form>
                 {% endif %}
             </div>
             {% else %}
@@ -77,7 +77,7 @@ Travel to {{object.country|capfirst}}
             <h2>People interested for this trip</h2>
             <hr>
             {% if request.user.is_authenticated %}
-            {% for person in object.users.all %}
+            {% for person in users %}
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-action">{{person.full_name}}</a>
             </div>
