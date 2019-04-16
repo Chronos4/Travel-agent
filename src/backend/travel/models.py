@@ -47,7 +47,8 @@ class Adventure(models.Model):
 
 def create_id(sender, instance, *args, **kwargs):
     if instance:
-        instance.unique_id = slugify(unique_id_generator(instance))
+        if instance.unique_id is None:
+            instance.unique_id = slugify(unique_id_generator(instance))
 
 
 pre_save.connect(create_id, sender=Adventure)

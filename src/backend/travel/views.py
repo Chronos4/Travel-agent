@@ -25,7 +25,7 @@ class DetailDestinationView(DetailView):
         except Product.DoesNotExist:
             raise Http404('Trip did not found')
         except Product.MultipleObjectsReturned:
-            qs = Products.objects.filter(slug=slug)
+            qs = Adventure.objects.filter(unique_id=unique_id)
             instance = qs.first()
         except:
             raise Http404('An error has occured')
@@ -41,7 +41,10 @@ def AdventureJoin(request, unique_id):
                 filt = obj.users.all()
                 if request.user not in filt:
                     obj.users.add(request.user)
+                    messages.success(request, 'You successfully enrolled')
                 elif request.user in filt:
+                    messages.info(
+                        request, 'You successfully canceled the registration')
                     obj.users.remove(request.user)
     else:
         return redirect('login')

@@ -10,9 +10,19 @@ Travel to {{object.country|capfirst}}
 {% if messages %}
 <ul class="messages text-center">
     {% for message in messages %}
-    <div class="alert alert-{{message.tags}}">
+    {% if message.tags == 'error'%}
+    <div class="alert alert-danger" role="alert">
         {{message}}
     </div>
+    {% elif message.tags == 'success' %}
+    <div class="alert alert-success" role="alert">
+        {{message}}
+    </div>
+    {% elif message.tags == 'info' %}
+    <div class="alert alert-info" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
@@ -24,6 +34,7 @@ Travel to {{object.country|capfirst}}
         <div class="col-sm-12 col-lg-4">
             <img class="card-img-top shadow-lg" src='{{object.image.url}}'>
         </div>
+        {% if request.user.is_authenticated %}
         <div class="col-sm-12 col-lg-4 mx-auto my-4">
             <h1 class="display-5 text-center">Participate</h1>
             <p>The trip organised by <a href="#"><strong>{{object.author.full_name|capfirst}}</strong></a></p>
@@ -34,13 +45,14 @@ Travel to {{object.country|capfirst}}
                     <h3 class=" text-muted">You posted this trip!</h3>
                 </div>
             </div>
+
             <div class="row text-center">
                 <a class="btn btn-outline-secondary btn-lg my-5 mx-auto px-5" href='#'>Process the trip</a>
                 {% else %}
                 {% if request.user in object.users.all %}
                 <h4>You already are enrolled here</h4>
                 <a class="btn btn-outline-secondary btn-lg my-5 mx-auto"
-                    href='{% url "adventure-join"  unique_id=object.unique_id %}'>Remove
+                    href='{% url "adventure-join"  unique_id=object.unique_id %}'>Cancel
                     Registration</a>
                 {% else %}
                 <a class="btn btn-outline-secondary btn-lg my-5 mx-auto"
@@ -48,6 +60,13 @@ Travel to {{object.country|capfirst}}
                 {% endif %}
                 {% endif %}
             </div>
+            {% else %}
+            <div class="col-sm-12 col-lg-4 mx-auto my-4">
+                <h3>Trip information</h3>
+                <p>The trip organised by <a href="#"><strong>{{object.author.full_name|capfirst}}</strong></a></p>
+                <p class="lead">Starts at : {{object.start}} <br> Ends at : {{object.end}}</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
