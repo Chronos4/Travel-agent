@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomePage, name="homepage"),
     path('destinations/', include('travel.urls')),
+    path('superapi/destinations/', include('travel.api.urls')),
     path('account/', include('accounts.urls')),
 ]
 if settings.DEBUG:

@@ -7,6 +7,15 @@ Travel to {{object.country|capfirst}}
 
 
 {% block content %}
+{% if messages %}
+<ul class="messages text-center">
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}}">
+        {{message}}
+    </div>
+    {% endfor %}
+</ul>
+{% endif %}
 <div class="row my-4">
     <h3 class="mx-auto">An Adventure to <span style="color:red">{{object.country|capfirst}}</span></h3>
 </div>
@@ -28,7 +37,15 @@ Travel to {{object.country|capfirst}}
             <div class="row text-center">
                 <a class="btn btn-outline-secondary btn-lg my-5 mx-auto px-5" href='#'>Process the trip</a>
                 {% else %}
-                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto" href='#'>Join to this adventure</a>
+                {% if request.user in object.users.all %}
+                <h4>You already are enrolled here</h4>
+                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto"
+                    href='{% url "adventure-join"  unique_id=object.unique_id %}'>Remove
+                    Registration</a>
+                {% else %}
+                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto"
+                    href='{% url "adventure-join"  unique_id=object.unique_id %}'>Join to this adventure</a>
+                {% endif %}
                 {% endif %}
             </div>
         </div>
@@ -40,11 +57,16 @@ Travel to {{object.country|capfirst}}
         <div class="col-lg-6 col-sm-12">
             <h2>People interested for this trip</h2>
             <hr>
+            {% if request.user.is_authenticated %}
             {% for person in object.users.all %}
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-action">{{person.full_name}}</a>
             </div>
             {% endfor %}
+            {% else %}
+            <h3>You have to login to check who is interested for this trip</h3>
+            <a href='{% url "login" %}'>Go to login page</a>
+            {% endif %}
         </div>
         <div class="col-lg-4 col-sm-12 mx-3 my-4">
             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the

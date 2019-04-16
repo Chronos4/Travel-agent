@@ -5,6 +5,7 @@ from backend.utilities import unique_id_generator
 import datetime
 from django.urls import reverse
 import pycountry
+from django.utils.text import slugify
 # Create your models here.
 
 User = settings.AUTH_USER_MODEL
@@ -46,7 +47,7 @@ class Adventure(models.Model):
 
 def create_id(sender, instance, *args, **kwargs):
     if instance:
-        instance.unique_id = unique_id_generator(instance)
+        instance.unique_id = slugify(unique_id_generator(instance))
 
 
 pre_save.connect(create_id, sender=Adventure)

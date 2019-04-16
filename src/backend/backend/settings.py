@@ -40,12 +40,11 @@ INSTALLED_APPS = [
 
     # 3rd apps
     'crispy_forms',
+    'rest_framework',
 
     # my apps
     'accounts',
     'travel',
-
-
 ]
 
 CRISPY_TEMPLATE_PACK = 'uni_form'
