@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.shortcuts import reverse
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 
 # Create your models here.
 
@@ -18,6 +18,19 @@ class Contact(models.Model):
 
     def __str__(self):
         return f'{self.user_from.email} follows {self.user_to.email}'
+
+
+# def check_for_now_already_following(sender, instance, *args, **kwargs):
+#     #TODO change the function later
+#     if instance:
+#         qs = Contact.objects.filter(
+#             user_from=instance.user_from, user_to=instance.user_to) or None
+#         if qs.exists():
+#             qs.first().delete()
+#             return ValueError("Error")
+
+
+# pre_save.connect(check_for_now_already_following, sender=Contact)
 
 
 class UserProfile(models.Model):

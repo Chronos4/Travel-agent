@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import DetailView
 from .models import UserProfile
 from django.http import Http404
+from django.contrib.auth import get_user_model
+from profiles.models import Contact
 
 
 class UserProfileDetail(DetailView):
@@ -22,3 +25,23 @@ class UserProfileDetail(DetailView):
         except:
             raise Http404('An error has occured')
         return instance
+
+
+User = get_user_model()
+
+
+def UserFollow(request, slug):
+    if request.user.is_authenticated:
+        get_user = User.objects.filter(slug=slug)
+        if get_user.exists():
+            person = get_user.first()
+            qs = Contact.objects.filter(user_from=request.user, user_to=person)
+            if qs.exists():
+                qs.first().delete()
+            else:
+                Contact.objects.create(
+                    user_from=request.user, user_to=person)
+            return render(request, 'profiles/user-profile.html', {'object': person})
+
+    else:
+        return redirect('login')

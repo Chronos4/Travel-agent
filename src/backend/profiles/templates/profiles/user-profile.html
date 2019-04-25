@@ -27,8 +27,18 @@
                     <div class="row user-detail-row">
                         <div class="col-md-12 col-sm-12 user-detail-section2 pull-left">
                             <div class="border"></div>
-                            <p>FOLLOWER</p>
-                            <span>320</span>
+                            <p>FOLLOWERS</p>
+                            {% if object.followers.count > 0 %}
+                            <span>{{object.followers.count}}</span>
+                            {% else %}
+                            <span>0</span>
+                            {% endif %}
+                            <p>FOLLOWING</p>
+                            {% if object.following.count > 0 %}
+                            <span>{{object.following.count}}</span>
+                            {% else %}
+                            <span>0</span>
+                            {% endif %}
                         </div>
                     </div>
 
