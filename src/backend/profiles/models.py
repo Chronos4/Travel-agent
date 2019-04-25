@@ -2,7 +2,22 @@ from django.db import models
 from django.conf import settings
 from django.shortcuts import reverse
 from django.db.models.signals import post_save
+
 # Create your models here.
+
+
+class Contact(models.Model):
+    user_from = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='rel_from_set')
+    user_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='rel_to_set')
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return f'{self.user_from.email} follows {self.user_to.email}'
 
 
 class UserProfile(models.Model):
@@ -19,7 +34,7 @@ class UserProfile(models.Model):
         return f'{self.user.email} profile'
 
     def get_absolute_url(self):
-        return reverse('user-profile', kwargs={'slug': self.user.slug})
+        return reverse('profiles:user-profile', kwargs={'slug': self.user.slug})
 
 
 def create_profile(sender, instance, created, *args, **kwargs):

@@ -9,7 +9,8 @@ user = get_user_model()
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ['__str__', 'slug', 'active', 'staff', 'admin', 'timestamp']
+    list_display = ['__str__', 'slug', 'active',
+                    'staff', 'admin', 'timestamp']
     ordering = ('-timestamp',)
     list_filter = ('staff', 'admin', 'active',)
     search_fields = ['email', 'slug']

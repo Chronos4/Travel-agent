@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
 )
 from django.db.models.signals import pre_save
 from backend.utilities import unique_slug_generator
+from profiles.models import Contact
 # Create your models here.
 
 
@@ -63,6 +64,8 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=150)
     age = models.DateField()
     slug = models.SlugField(max_length=200, blank=True, null=True)
+    following = models.ManyToManyField(
+        'self', through=Contact, related_name="followers", symmetrical=False)
     gender = models.CharField(
         max_length=150, choices=gender_choices, blank=True, null=True)
     active = models.BooleanField(default=True)
@@ -108,6 +111,3 @@ def slug_create(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(slug_create, sender=User)
-
-
-
