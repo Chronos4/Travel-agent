@@ -113,13 +113,12 @@ def slug_create(sender, instance, *args, **kwargs):
 pre_save.connect(slug_create, sender=User)
 
 
-def m2m_changed_receiver(sender, instance, action, *args, **kwargs):
-    if action == 'post_remove' or action == 'post_add' or action == 'post_clear':
+def m2m_changed_receiver(sender,instance,action,*args,**kwargs):
+    if action=='post_remove' or action=='post_add' or action=='post_clear':
         following = instance.following.all()
         followers = instance.followers.all()
         instance.following = following
         instance.followers = followers
         instance.save()
 
-
-m2m_changed.connect(m2m_changed_receiver, sender=User)
+m2m_changed.connect(m2m_changed_receiver,sender=User)

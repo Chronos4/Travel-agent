@@ -26,6 +26,16 @@ class UserProfileDetail(DetailView):
             raise Http404('An error has occured')
         return instance
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(UserProfileDetail, self).get_context_data(
+            *args, **kwargs)
+        user = User.objects.filter(
+            slug=self.kwargs.get('slug')).first()
+        context['object'] = user
+        profile = UserProfile.objects.get(user=user)
+        context['profile'] = profile
+        return context
+
 
 User = get_user_model()
 

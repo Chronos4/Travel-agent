@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # 3rd apps
     'crispy_forms',
     'rest_framework',
+    'sorl.thumbnail',
 
     # my apps
     'accounts',
