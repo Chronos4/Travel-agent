@@ -79,7 +79,8 @@ Travel to {{object.country|capfirst}}
             {% if request.user.is_authenticated %}
             {% for person in users %}
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action">{{person.full_name}}</a>
+                <a href="{% url 'profiles:user-profile' slug=person.slug %}"
+                    class="list-group-item list-group-item-action">{{person.full_name}}</a>
             </div>
             {% endfor %}
             {% else %}

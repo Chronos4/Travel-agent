@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     # my apps
     'accounts',
     'travel',
-    'profiles'
+    'profiles',
+    'images'
 ]
 
 CRISPY_TEMPLATE_PACK = 'uni_form'

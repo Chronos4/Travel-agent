@@ -6,12 +6,14 @@
     border-radius: 5px;
     background-attachment: scroll;
     overflow: hidden;
+    
 }
 .videoContainer video {
     min-width: 100%;
     min-height: 100%;
     position: relative;
     z-index: 1;
+    opacity:0.2;
 }
 .videoContainer .overlay {
     height: 100%;

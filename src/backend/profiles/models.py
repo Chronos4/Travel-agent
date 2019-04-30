@@ -37,7 +37,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     profile_image = models.ImageField(
-        upload_to='profile-images', blank=True, null=True)
+        upload_to='profile-images', default='default-profile.png', blank=True, null=True)
     description = models.CharField(max_length=150, blank=True, null=True)
     hobbies = models.CharField(max_length=1000, blank=True, null=True)
     places_been = models.TextField(blank=True, null=True)

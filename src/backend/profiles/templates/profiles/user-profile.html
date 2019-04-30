@@ -7,14 +7,14 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <div class="row text-center">
-        <div class="col-5 section-1">
+        <div class="col-3 section-1">
             {% if profile.profile_image %}
             <img src="{{ profile.profile_image.url }}" width="100px;" height="100px;" class="rounded">
             {% endif %}
-            <h5>Followers:{{object.following.count}}</h5>
-            <h5>Following:{{object.followers.count}}</h5>
+            <h5>Followers:{{object.followers.count}}</h5>
+            <h5>Following:{{object.following.count}}</h5>
             <a href="#" class="btn btn-outline-secondary">About</a><br>
             {% if request.user in object.followers.all %}
             <a href="{% url 'profiles:user-follow'  slug=object.slug %}"
@@ -23,8 +23,10 @@
             <a href="{% url 'profiles:user-follow'  slug=object.slug %}" class="btn btn-outline-primary my-3">Follow</a>
             {% endif  %}
         </div>
-        <div class="col-5 section-2">
-
+        <div class="col-7 section-2 my-5">
+            {% for image in object.image_set.all %}
+            <img src="{{image.image.url}}" width="200px;" height="200px;" style="padding:5px; border-radius:50px;">
+            {% endfor %}
         </div>
     </div>
 </div>

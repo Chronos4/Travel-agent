@@ -46,12 +46,16 @@ def UserFollow(request, slug):
         if get_user.exists():
             person = get_user.first()
             qs = Contact.objects.filter(user_from=request.user, user_to=person)
-            context = {'object': person}
+            profile = UserProfile.objects.get(user=person)
             if qs.exists():
                 qs.first().delete()
             else:
                 Contact.objects.create(
                     user_from=request.user, user_to=person)
+            context = {
+                'object': person,
+                'profile': profile
+            }
             return render(request, 'profiles/user-profile.html', context)
 
     else:
