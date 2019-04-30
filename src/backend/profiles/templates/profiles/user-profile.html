@@ -10,12 +10,18 @@
 <div class="container">
     <div class="row text-center">
         <div class="col-5 section-1">
+            {% if profile.profile_image %}
             <img src="{{ profile.profile_image.url }}" width="100px;" height="100px;" class="rounded">
+            {% endif %}
             <h5>Followers:{{object.following.count}}</h5>
             <h5>Following:{{object.followers.count}}</h5>
             <a href="#" class="btn btn-outline-secondary">About</a><br>
-            <a href="{% url 'profiles:user-follow'  slug='{{object.slug}}' %}"
-                class="btn btn-outline-primary my-3">Follow</a>
+            {% if request.user in object.followers.all %}
+            <a href="{% url 'profiles:user-follow'  slug=object.slug %}"
+                class="btn btn-outline-primary my-3">UnFollow</a>
+            {% else %}
+            <a href="{% url 'profiles:user-follow'  slug=object.slug %}" class="btn btn-outline-primary my-3">Follow</a>
+            {% endif  %}
         </div>
         <div class="col-5 section-2">
 
