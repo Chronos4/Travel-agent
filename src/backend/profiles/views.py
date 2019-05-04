@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView
+from django.views import View
 from .models import UserProfile
 from django.http import Http404
 from django.contrib.auth import get_user_model
@@ -40,23 +41,34 @@ class UserProfileDetail(DetailView):
 User = get_user_model()
 
 
-def UserFollow(request, slug):
-    if request.user.is_authenticated:
+class UserFollow(View):
+
+    def get(self, *args, **kwargs):
+        request = self.request
+        if request.user.is_authenticated:
+            slug = self.kwargs.get('slug')
+            get_user = User.objects.filter(slug=slug)
+            if get_user.exists():
+                person = get_user.first()
+                qs = Contact.objects.filter(
+                    user_from=request.user, user_to=person)
+                if qs.exists():
+                    qs.first().delete()
+                else:
+                    Contact.objects.create(
+                        user_from=request.user, user_to=person)
+                return redirect('profiles:user-profile', slug=slug)
+        else:
+            return redirect('login')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(UserFollow, self).get_context_data(*args, **kwargs)
+        slug = self.kwargs.get('slug')
         get_user = User.objects.filter(slug=slug)
         if get_user.exists():
             person = get_user.first()
-            qs = Contact.objects.filter(user_from=request.user, user_to=person)
-            profile = UserProfile.objects.get(user=person)
-            if qs.exists():
-                qs.first().delete()
-            else:
-                Contact.objects.create(
-                    user_from=request.user, user_to=person)
-            context = {
-                'object': person,
-                'profile': profile
-            }
-            return render(request, 'profiles/user-profile.html', context)
-
-    else:
-        return redirect('login')
+            context['object'] = person
+        profile = UserProfile.objects.get(user=person) or None
+        if profile is not None:
+            context['profile'] = profile
+        return context
