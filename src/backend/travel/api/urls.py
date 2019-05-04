@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import AdventureListApi
+from .views import AdventureListApi, AdventureRetrieveApi
 
-
-urlpatterns=[
-	path('',AdventureListApi.as_view(),name="adventure-list-api")
+app_name = 'travel_api'
+urlpatterns = [
+    path('', AdventureListApi.as_view(), name="list"),
+    path('<unique_id>', AdventureRetrieveApi.as_view(), name="detail")
 ]

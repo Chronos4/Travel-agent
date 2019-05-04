@@ -2,19 +2,23 @@ from travel.models import Adventure
 from rest_framework import serializers
 
 
-
-
 class AdventureListSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Adventure
-		fields = [
-			'users',
-			'author',
-			'country',
-			'town',
-			'start',
-			'end',
-			'timestamp',
-			'image'
-		]
+    url = serializers.HyperlinkedIdentityField(
+        view_name='travel_api:detail',
+        lookup_field='unique_id'
+    )
 
+    class Meta:
+        model = Adventure
+        fields = [
+            'unique_id',
+            'users',
+            'author',
+            'country',
+            'town',
+            'start',
+            'end',
+            'url',
+            'timestamp',
+            'image'
+        ]
