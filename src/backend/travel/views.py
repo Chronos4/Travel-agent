@@ -2,14 +2,28 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 from .models import Adventure
+from profiles.models import UserProfile
 from django.contrib import messages
+from django.db.models import Q
 
 
 class ListDestinationView(ListView):
     template_name = 'travel/List-destinations.html'
 
-    def get_queryset(self, *args, **kwarg):
-        return Adventure.objects.filter(active=True)
+    def get_queryset(self, *args, **kwargs):
+        q = self.request.GET.get('q')
+        if q is not None:
+            lookups_For_Destinations = Q(
+                country__icontains=q) | Q(town__icontains=q)
+            lookups_For_Profile = Q(user__first_name__icontains=q)
+            query_for_destinations = Adventure.objects.filter(
+                lookups_For_Destinations, active=True).distinct()
+            query_for_profiles = UserProfile.objects.filter(
+                lookups_For_Profile).distinct()
+            query = query_for_destinations or query_for_profiles
+        else:
+            query = Adventure.objects.all().filter(active=True)
+        return query
 
 
 class DetailDestinationView(DetailView):
@@ -56,7 +70,7 @@ def AdventureJoin(request, unique_id):
                     obj.users.remove(request.user)
     else:
         return redirect('login')
-    return redirect('destination-detail', unique_id=unique_id)
+    return redirect('travel:destination-detail', unique_id=unique_id)
 
 
 class DeleteDestinationView(DeleteView):
@@ -74,10 +88,10 @@ class DeleteDestinationView(DeleteView):
                     adv.delete()
                     messages.success(
                         self.request, 'You deleted the post successfully!')
-                    return redirect('destination-list')
+                    return redirect('travel:destination-list')
                 else:
                     print('error my friend')
                     messages.error(
                         self.request, 'You are not the author of this post to delete it!')
                     unique_id = self.kwargs['unique_id']
-                    return redirect('destination-detail', unique_id=self.kwargs.get('unique_id'))
+                    return redirect('travel:destination-detail', unique_id=self.kwargs.get('unique_id'))

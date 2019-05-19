@@ -42,7 +42,7 @@
             <ul class="list-unstyled">
                 {% for destination in user.author.all %}
                 <li class="media my-5">
-                    <a href="{% url 'destination-detail' unique_id=destination.unique_id %}"> <img
+                    <a href="{% url 'travel:destination-detail' unique_id=destination.unique_id %}"> <img
                             src="{{destination.image.url}}" class="mr-3" alt="photo of {{destination.country}}"
                             width="200px" height="200px"></a>
                     <div class="media-body">

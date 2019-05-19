@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import ListDestinationView, DetailDestinationView, AdventureJoin, DeleteDestinationView
 
+app_name = 'travel'
 
 urlpatterns = [
     path('', ListDestinationView.as_view(), name='destination-list'),

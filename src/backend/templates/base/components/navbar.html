@@ -6,12 +6,13 @@
     </button>
     <div class="collapse navbar-collapse" id="navNavId">
         <ul class="navbar-nav mx-auto font-weight-bold">
+            {% include 'base/snippets/searchbar.html' %}
             <li class="nav-item active">
                 <a class="nav-link" href="/"><i class="fas fa-home"></i> Home
                     <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'destination-list' %}"><i class="fas fa-globe-africa"></i>
+                <a class="nav-link" href="{% url 'travel:destination-list' %}"><i class="fas fa-globe-africa"></i>
                     Destinations</a>
             </li>
             {% if not request.user.is_authenticated %}

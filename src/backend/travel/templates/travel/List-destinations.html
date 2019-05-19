@@ -31,7 +31,11 @@ Available destinations
         {% endfor %}
     </div>
     {% else %}
+    {% if request.GET.q %}
+    <h3 style='color:lightcoral'>No results for: {{request.GET.q}}</h3>
+    {% else %}
     <h3 style='color:lightcoral'>No active destinations!</h3>
+    {% endif %}
     {% endif %}
 </div>
 

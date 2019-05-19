@@ -42,7 +42,7 @@ class Adventure(models.Model):
         return f'{self.unique_id}'
 
     def get_absolute_url(self, *args, **kwargs):
-        return reverse('destination-detail', kwargs={'unique_id': self.unique_id})
+        return reverse('travel:destination-detail', kwargs={'unique_id': self.unique_id})
 
 
 def create_id(sender, instance, *args, **kwargs):
