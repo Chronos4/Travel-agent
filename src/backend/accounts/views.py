@@ -18,6 +18,9 @@ class RegisterView(NotAccessMixin, CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(RegisterView, self).get_context_data(*args, **kwargs)
+        context['form'] = self.form_class
+        return context
+
 
 
 class LoginView(NotAccessMixin, NextUrlMixin, RequestFormAttachMixin, FormView):

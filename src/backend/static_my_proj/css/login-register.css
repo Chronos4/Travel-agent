@@ -1,0 +1,73 @@
+nav{
+    margin:0;
+}
+
+.body{
+    margin:-30px;
+    padding:0;
+    width:101vw;
+    height:100vh;
+    background-size:cover;
+
+}
+
+
+
+.login-form{
+    position: absolute;
+    top:30%;
+    right:12%; 
+}
+
+.login-form input{
+    border-radius:15px;
+    width:300px;
+    padding-left:10px;
+}
+
+.login-form button ,.login-form a{
+    border-radius:30px;
+}
+
+.register-form{
+    position: absolute;
+    top:20%;
+    right:12%; 
+}
+
+.register-form input{
+    border-radius:15px;
+    width:300px;
+    padding-left:10px;
+}  
+.register-form select{
+    display:inline;
+    border-radius:15px;
+    width:300px;
+}  
+
+
+.register-form button ,.register-form a{
+    border-radius:30px;
+}
+
+
+@media  screen and (max-width: 500px){
+    .body{
+        margin:-30px;
+        padding:0;
+        width:107vw;
+        height:100vh;
+        background-size:cover;
+        overflow: hidden
+    }
+    
+    .login-form{
+        position: absolute;
+        top:30%;
+        right:-2%; 
+    }
+}
+
+
+

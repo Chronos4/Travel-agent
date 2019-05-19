@@ -17,19 +17,19 @@ class RegisterForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
     password = forms.CharField(label='', widget=forms.PasswordInput(
-        attrs={'placeholder': 'Password', 'id': 'register-staff'}))
+        attrs={'placeholder': 'Password'}))
     password2 = forms.CharField(
-        label='', widget=forms.PasswordInput(attrs={'placeholder': 'Password Confirmation', 'id': 'register-staff'}))
+        label='', widget=forms.PasswordInput(attrs={'placeholder': 'Password Confirmation'}))
 
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'age', 'gender')
         widgets = {
-            'email': forms.EmailInput(attrs={'placeholder': 'Enter your Email', 'id': 'register-staff'}),
-            'first_name': forms.TextInput(attrs={'placeholder': 'Enter your First Name', 'id': 'register-staff'}),
-            'last_name': forms.TextInput(attrs={'placeholder': 'Enter your Last Name', 'id': 'register-staff'}),
-            'age': forms.SelectDateWidget(attrs={'id': 'register-staff'}, years=YEARS),
-            'gender': forms.Select(attrs={'id': 'register-gender'})
+            'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
+            'first_name': forms.TextInput(attrs={'placeholder': 'First Name'}),
+            'last_name': forms.TextInput(attrs={'placeholder': 'Last Name'}),
+            'age': forms.SelectDateWidget(attrs={}, years=YEARS),
+            'gender': forms.Select(attrs={})
         }
         labels = {
             "email": '',
@@ -37,8 +37,11 @@ class RegisterForm(forms.ModelForm):
             "last_name": '',
             "age": '',
             "gender": ''
-
         }
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        self.initial['gender'] = 'male'
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -106,9 +109,9 @@ class UserAdminCreateForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='', widget=forms.EmailInput(
-        attrs={'id': 'register-staff', 'placeholder': 'Enter your email'}))
+        attrs={'placeholder': 'Enter your email'}))
     password = forms.CharField(label='',
-                               widget=forms.PasswordInput(attrs={'id': 'register-staff', 'placeholder': 'Password'}))
+                               widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
 
     def __init__(self, request, *args, **kwargs):
         self.request = request

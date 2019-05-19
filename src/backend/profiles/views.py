@@ -32,7 +32,7 @@ class UserProfileDetail(DetailView):
             *args, **kwargs)
         user = User.objects.filter(
             slug=self.kwargs.get('slug')).first()
-        context['object'] = user
+        context['user'] = user
         profile = UserProfile.objects.get(user=user)
         context['profile'] = profile
         return context
@@ -50,14 +50,17 @@ class UserFollow(View):
             get_user = User.objects.filter(slug=slug)
             if get_user.exists():
                 person = get_user.first()
-                qs = Contact.objects.filter(
-                    user_from=request.user, user_to=person)
-                if qs.exists():
-                    qs.first().delete()
+                if request.user == person:
+                    return redirect('profiles:user-profile', slug=slug)
                 else:
-                    Contact.objects.create(
+                    qs = Contact.objects.filter(
                         user_from=request.user, user_to=person)
-                return redirect('profiles:user-profile', slug=slug)
+                    if qs.exists():
+                        qs.first().delete()
+                    else:
+                        Contact.objects.create(
+                            user_from=request.user, user_to=person)
+                    return redirect('profiles:user-profile', slug=slug)
         else:
             return redirect('login')
 
@@ -67,7 +70,7 @@ class UserFollow(View):
         get_user = User.objects.filter(slug=slug)
         if get_user.exists():
             person = get_user.first()
-            context['object'] = person
+            context['user'] = person
         profile = UserProfile.objects.get(user=person) or None
         if profile is not None:
             context['profile'] = profile

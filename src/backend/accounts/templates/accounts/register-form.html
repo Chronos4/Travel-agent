@@ -7,16 +7,19 @@ Register An Account
 
 
 {% block content %}
-<h1 class="text-center my-4">Register An Account</h1>
-<div class="container text-center">
-    <div class="col-lg-6 col-md-6 mx-auto col-sm-12">
-        <hr>
-        <form id="registration" method="POST">
-            {% csrf_token %}
-            {{form.as_p}}
-            <button class="btn btn-outline-success">Submit</button>
-            <a href="{% url 'login' %}" class="btn btn-outline-primary">Sign in</a>
-        </form>
+<link rel="stylesheet" href="{% static 'css/login-register.css' %}">
+<div class="body" style='background: url("{% static "imgs/loginphoto.jpg" %}") no-repeat'>
+    <div class="register-form container text-center">
+        <h1 class="text-center my-4">Create An Account</h1>
+        <div class="col-lg-6 col-md-6 mx-auto col-sm-12">
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button class="btn btn-success">Create</button>
+                <a href="{% url 'login' %}" class="btn btn-primary">Sign in</a>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock content %}

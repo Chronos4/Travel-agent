@@ -1,12 +1,14 @@
 import React from 'react';
+import DestinationList from './destinations/DestinationList';
 
 
-
-class App extends Component {
+class App extends React.Component {
     state = {}
     render() {
         return (
-            <div></div>
+            <div>
+                <DestinationList />
+            </div>
         );
     }
 }

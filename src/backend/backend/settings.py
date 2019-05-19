@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'sorl.thumbnail',
+    'corsheaders',
 
     # my apps
     'accounts',
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -150,6 +152,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(
     BASE_DIR), "static_cdn", "media_root")
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_REPLACE_HTTPS_REFERER = False
 HOST_SCHEME = "http://"

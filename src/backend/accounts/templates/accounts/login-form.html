@@ -1,4 +1,4 @@
-{% extends 'base-template.html' %}
+{% extends 'base-form-template.html' %}
 {% load static %}
 
 {% block title %}
@@ -6,20 +6,22 @@ Sign In
 {% endblock title%}
 
 {% block content %}
-<div class="container text-center" id="registerform">
-    <h1 class="text-center my-4">Sign In</h1>
-    <div class="container text-center">
-        <div class="col-lg-6 col-md-6 mx-auto col-sm-12">
-            <hr>
-            <form id="registration" method="POST">
-                {% csrf_token %}
-                {{form.as_p}}
-                <button class="btn btn-outline-success">Login</button>
-                <a class="btn btn-outline-primary" href="{% url 'register' %}">Register An account</a>
-            </form>
+<link rel="stylesheet" href="{% static 'css/login-register.css' %}">
+<div class="body" style='background: url("{% static "imgs/loginphoto.jpg" %}") no-repeat'>
+    <div class="container text-center login-form">
+        <h1 class="text-center my-4">Log in</h1>
+        <div class="container text-center">
+            <div class="col-lg-6 col-md-6 mx-auto col-sm-12">
+                <hr>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <button class="btn btn-success">Login</button>
+                    <a class="btn btn-primary" href="{% url 'register' %}">Register An account</a>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
 
 {% endblock content %}
