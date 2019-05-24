@@ -5,6 +5,7 @@ from .models import Adventure
 from profiles.models import UserProfile
 from django.contrib import messages
 from django.db.models import Q
+from actions.utils import create_action
 
 
 class ListDestinationView(ListView):
@@ -22,7 +23,7 @@ class ListDestinationView(ListView):
                 lookups_For_Profile).distinct()
             query = query_for_destinations or query_for_profiles
         else:
-            query = Adventure.objects.all().filter(active=True)
+            query = Adventure.objects.filter(active=True)
         return query
 
 
@@ -36,7 +37,10 @@ class DetailDestinationView(DetailView):
 
         try:
             instance = Adventure.objects.get(unique_id=unique_id)
+            create_action(request.user, 'Viewed destination', instance)
         except Product.DoesNotExist:
+            create_action(
+                request.user, 'Searched destination but no found', instance)
             raise Http404('Trip did not found')
         except Product.MultipleObjectsReturned:
             qs = Adventure.objects.filter(unique_id=unique_id)
@@ -63,10 +67,13 @@ def AdventureJoin(request, unique_id):
                 filt = obj.users.all()
                 if request.user not in filt:
                     obj.users.add(request.user)
+                    create_action(request.user, 'Enrolled In Destination', obj)
                     messages.success(request, 'You successfully enrolled')
                 elif request.user in filt:
                     messages.warning(
                         request, 'You successfully canceled the registration')
+                    create_action(
+                        request.user, 'Removed From Destination', obj)
                     obj.users.remove(request.user)
     else:
         return redirect('login')
@@ -85,7 +92,10 @@ class DeleteDestinationView(DeleteView):
             if query.exists():
                 adv = query.first()
                 if self.request.user == adv.author:
-                    adv.delete()
+                    create_action(self.request.user,
+                                  'Deleted Destination', adv)
+                    adv.active = False
+                    adv.save()
                     messages.success(
                         self.request, 'You deleted the post successfully!')
                     return redirect('travel:destination-list')

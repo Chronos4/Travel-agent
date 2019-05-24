@@ -54,10 +54,10 @@ def create_id(sender, instance, *args, **kwargs):
 pre_save.connect(create_id, sender=Adventure)
 
 
-def check_timezones(sender, instance, *args, **kwargs):
-    if instance:
-        if instance.start < datetime.datetime.now().date():
-            raise ValueError('An error occured check the date')
+# def check_timezones(sender, instance, *args, **kwargs):
+#     if instance:
+#         if instance.start < datetime.datetime.now().date():
+#             raise ValueError('An error occured check the date')
 
 
-pre_save.connect(check_timezones, sender=Adventure)
+# pre_save.connect(check_timezones, sender=Adventure)

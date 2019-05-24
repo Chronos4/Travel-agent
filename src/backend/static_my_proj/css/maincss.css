@@ -1,3 +1,17 @@
+li a:hover{
+    color:rgba(255, 255, 255, 0.527) !important;
+}
 nav .search-bar{
     margin-right:50px;
+}
+
+
+#search-button{
+    border-color: rgb(32, 149, 179);
+    color:rgb(32, 149, 179);
+}
+
+#search-button:hover{
+    background-color: rgb(78, 38, 141);
+    color:white;
 }

@@ -6,6 +6,7 @@ from .models import UserProfile
 from django.http import Http404
 from django.contrib.auth import get_user_model
 from profiles.models import Contact
+from actions.utils import create_action
 
 
 class UserProfileDetail(DetailView):
@@ -15,9 +16,10 @@ class UserProfileDetail(DetailView):
     def get_object(self, *args, **kwargs):
         request = self.request
         slug = self.kwargs.get('slug')
-
         try:
             instance = UserProfile.objects.get(user__slug=slug)
+            create_action(request.user, 'Viewed Profile', instance)
+            return instance
         except UserProfile.DoesNotExist:
             raise Http404('User does not exist')
         except UserProfile.MultipleObjectsReturned:
@@ -56,10 +58,12 @@ class UserFollow(View):
                     qs = Contact.objects.filter(
                         user_from=request.user, user_to=person)
                     if qs.exists():
+                        create_action(request.user, 'Unfollowed', person)
                         qs.first().delete()
                     else:
-                        Contact.objects.create(
+                        instance = Contact.objects.create(
                             user_from=request.user, user_to=person)
+                        create_action(request.user, 'Followed', person)
                     return redirect('profiles:user-profile', slug=slug)
         else:
             return redirect('login')

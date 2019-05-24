@@ -103,6 +103,10 @@ class User(AbstractBaseUser):
     def is_active(self):
         return self.active
 
+    @property
+    def followers_count(self):
+        return self.following.all().count()
+
 
 def slug_create(sender, instance, *args, **kwargs):
     if instance:

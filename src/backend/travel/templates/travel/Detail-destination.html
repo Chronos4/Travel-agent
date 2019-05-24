@@ -49,7 +49,7 @@ Travel to {{object.country|capfirst}}
             <div class="row text-center">
                 <a class="btn btn-outline-secondary btn-lg my-5 mx-auto px-5" href='#'>Process the trip</a>
                 {% else %}
-                <form method="POST" action='{% url "adventure-join"  unique_id=object.unique_id %}'>
+                <form method="POST" action='{% url "travel:adventure-join"  unique_id=object.unique_id %}'>
                     {% csrf_token %}
                     {% if request.user in object.users.all %}
                     <h4>You already are enrolled here</h4>

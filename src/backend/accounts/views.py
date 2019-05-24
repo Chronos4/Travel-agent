@@ -22,23 +22,22 @@ class RegisterView(NotAccessMixin, CreateView):
         return context
 
 
-
 class LoginView(NotAccessMixin, NextUrlMixin, RequestFormAttachMixin, FormView):
     form_class = LoginForm
     success_url = '/'
     template_name = 'accounts/login-form.html'
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
-    template_name = 'accounts/user-profile.html'
+# class UserDetailView(LoginRequiredMixin, DetailView):
+#     template_name = 'accounts/user-profile.html'
 
-    def get_object(self, *args, **kwargs):
-        queryset = User.objects.filter(slug=self.kwargs.get('slug'))
-        if queryset.exists():
-            person = queryset.first()
-            return person
+#     def get_object(self, *args, **kwargs):
+#         queryset = User.objects.filter(slug=self.kwargs.get('slug'))
+#         if queryset.exists():
+#             person = queryset.first()
+#             return person
 
-    def dispatch(self, *args, **kwargs):
-        queryset = User.objects.filter(slug=self.kwargs.get('slug'))
-        if not queryset.exists():
-            return redirect('/')
+#     def dispatch(self, *args, **kwargs):
+#         queryset = User.objects.filter(slug=self.kwargs.get('slug'))
+#         if not queryset.exists():
+#             return redirect('/')
