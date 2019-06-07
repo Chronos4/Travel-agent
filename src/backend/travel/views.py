@@ -1,10 +1,17 @@
+# Django core
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView
-from .models import Adventure
-from profiles.models import UserProfile
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
+from django.http import Http404
+from django.views.generic.edit import FormMixin
+from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Q
+
+# my apps
+from .models import Adventure, Destination_comment
+from .forms import Comment_Form
+from profiles.models import UserProfile
 from actions.utils import create_action
 
 
@@ -16,33 +23,34 @@ class ListDestinationView(ListView):
         if q is not None:
             lookups_For_Destinations = Q(
                 country__icontains=q) | Q(town__icontains=q)
-            lookups_For_Profile = Q(user__first_name__icontains=q)
             query_for_destinations = Adventure.objects.filter(
                 lookups_For_Destinations, active=True).distinct()
-            query_for_profiles = UserProfile.objects.filter(
-                lookups_For_Profile).distinct()
-            query = query_for_destinations or query_for_profiles
+            query = query_for_destinations
+            if(self.request.user.is_authenticated):
+                create_action(self.request.user, f'Searched for --> {q}')
         else:
             query = Adventure.objects.filter(active=True)
         return query
 
 
-class DetailDestinationView(DetailView):
+class DetailDestinationView(FormMixin, DetailView):
     template_name = "travel/Detail-destination.html"
     model = Adventure
+    form_class = Comment_Form
 
     def get_object(self, *args, **kwargs):
         request = self.request
         unique_id = self.kwargs.get('unique_id')
-
         try:
             instance = Adventure.objects.get(unique_id=unique_id)
-            create_action(request.user, 'Viewed destination', instance)
-        except Product.DoesNotExist:
+            print(instance)
+            if request.user.is_authenticated:
+                create_action(request.user, 'Viewed destination', instance)
+        except Adventure.DoesNotExist:
             create_action(
                 request.user, 'Searched destination but no found', instance)
             raise Http404('Trip did not found')
-        except Product.MultipleObjectsReturned:
+        except Adventure.MultipleObjectsReturned:
             qs = Adventure.objects.filter(unique_id=unique_id)
             instance = qs.first()
         except:
@@ -54,8 +62,37 @@ class DetailDestinationView(DetailView):
                         self).get_context_data(*args, **kwargs)
         query = self.object.users.all().exclude(
             email=self.object.author.email)
+        # get all the comments related to this post
+        comments_list = self.object.comments.all()
+        # add a paginator
+        paginator = Paginator(comments_list, 5)
+        page = self.request.GET.get('page')
+        comments = paginator.get_page(page)
         context['users'] = query
+        context['form'] = self.form_class
+        context['comments'] = comments
         return context
+
+    def post(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            form = self.get_form()
+            if form.is_valid():
+                print(form)
+                destination = self.get_object()
+                new_comment = form.save(commit=False)
+                new_comment.post = destination
+                new_comment.user = self.request.user
+                print(new_comment)
+                new_comment.save()
+                return self.form_valid(new_comment)
+            else:
+                return self.form_invalid(new_comment)
+        else:
+            return redirect('login')
+
+    def get_success_url(self):
+        if self.request.method == "POST":
+            return reverse('travel:destination-detail', kwargs={'unique_id': self.kwargs.get('unique_id')})
 
 
 def AdventureJoin(request, unique_id):

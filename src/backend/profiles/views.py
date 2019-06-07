@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView
+from django.views.generic import DetailView, CreateView
 from django.views import View
 from .models import UserProfile
 from django.http import Http404
 from django.contrib.auth import get_user_model
 from profiles.models import Contact
 from actions.utils import create_action
+from .forms import ProfileForm
 
 
 class UserProfileDetail(DetailView):
@@ -79,3 +80,21 @@ class UserFollow(View):
         if profile is not None:
             context['profile'] = profile
         return context
+
+
+class CreateProfile(CreateView):
+    template_name = "profiles/profile-create.html"
+    form_class = ProfileForm
+
+    def get_success_url(self):
+        return reverse('profiles:user-profile', kwargs={'slug': self.user.slug})
+
+    def dispatch(self, *args, **kwargs):
+        request = self.request
+        if not request.user.is_authenticated:
+            return redirect('login')
+        else:
+            if request.user.userprofile.active:
+                return redirect('/')
+            else:
+                return super(CreateProfile, self).dispatch(*args, **kwargs)

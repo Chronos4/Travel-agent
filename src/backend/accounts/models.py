@@ -68,6 +68,7 @@ class User(AbstractBaseUser):
         'self', through=Contact, related_name="followers", symmetrical=False)
     gender = models.CharField(
         max_length=150, choices=gender_choices, blank=True, null=True)
+    user_from_country = models.CharField(max_length=300, null=True, blank=True)
     active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)

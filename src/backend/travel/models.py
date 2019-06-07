@@ -61,3 +61,19 @@ pre_save.connect(create_id, sender=Adventure)
 
 
 # pre_save.connect(check_timezones, sender=Adventure)
+
+class Destination_comment(models.Model):
+    post = models.ForeignKey(
+        Adventure, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'Comment by {self.user.first_name} on {self.post}'
+
+    class Meta:
+        ordering = ['-created']

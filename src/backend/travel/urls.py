@@ -1,5 +1,9 @@
 from django.urls import path
-from .views import ListDestinationView, DetailDestinationView, AdventureJoin, DeleteDestinationView
+from .views import (
+    ListDestinationView,
+    DetailDestinationView,
+    AdventureJoin,
+    DeleteDestinationView)
 
 app_name = 'travel'
 
