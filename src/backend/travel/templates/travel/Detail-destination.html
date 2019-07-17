@@ -7,99 +7,6 @@ Travel to {{object.country|capfirst}}
 
 
 {% block content %}
-{% if messages %}
-<ul class="messages text-center">
-    {% for message in messages %}
-    {% if message.tags == 'error'%}
-    <div class="alert alert-danger" role="alert">
-        {{message}}
-    </div>
-    {% elif message.tags == 'success' %}
-    <div class="alert alert-success" role="alert">
-        {{message}}
-    </div>
-    {% elif message.tags == 'warning' %}
-    <div class="alert alert-warning" role="alert">
-        {{message}}
-    </div>
-    {% endif %}
-    {% endfor %}
-</ul>
-{% endif %}
-<div class="row my-4">
-    <h3 class="mx-auto">An Adventure to <span style="color:red">{{object.country|capfirst}}</span></h3>
-</div>
-<div class="container my-5">
-    <div class="row">
-        <div class="col-sm-12 col-lg-4">
-            <img class="card-img-top shadow-lg" src='{{object.image.url}}'>
-        </div>
-        {% if request.user.is_authenticated %}
-        <div class="col-sm-12 col-lg-4 mx-auto my-4">
-            <h1 class="display-5 text-center">Participate</h1>
-            <p>The trip organised by <a href="#"><strong>{{object.author.full_name|capfirst}}</strong></a></p>
-            <p class="lead">Starts at : {{object.start}} <br> Ends at : {{object.end}}</p>
-            {% if object.author == request.user %}
-            <div class="row text-center">
-                <div class="col-12 mt-4">
-                    <h3 class=" text-muted">You posted this trip!</h3>
-                </div>
-            </div>
-
-            <div class="row text-center">
-                <a class="btn btn-outline-secondary btn-lg my-5 mx-auto px-5" href='#'>Process the trip</a>
-                {% else %}
-                <form method="POST" action='{% url "travel:adventure-join"  unique_id=object.unique_id %}'>
-                    {% csrf_token %}
-                    {% if request.user in object.users.all %}
-                    <h4>You are enrolled here</h4>
-                    <button class="btn btn-outline-secondary btn-lg my-5 mx-auto">Cancel Registration</button>
-                    {% else %}
-                    <button class="btn btn-outline-secondary btn-lg my-5 mx-auto">Join to this adventure</button>
-                    {% endif %}
-                </form>
-                {% endif %}
-            </div>
-            {% else %}
-            <div class="col-sm-12 col-lg-4 mx-auto my-4">
-                <h3>Trip information</h3>
-                <p>The trip organised by <a href="#"><strong>{{object.author.full_name|capfirst}}</strong></a></p>
-                <p class="lead">Starts at : {{object.start}} <br> Ends at : {{object.end}}</p>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-<hr>
-<div class="container my-5">
-    <div class="row text-center">
-        <div class="col-lg-6 col-sm-12">
-            <h2>People interested for this trip</h2>
-            <hr>
-            {% if request.user.is_authenticated %}
-            {% for person in users %}
-            <div class="list-group">
-                <a href="{% url 'profiles:user-profile' slug=person.slug %}"
-                    class="list-group-item list-group-item-action">{{person.full_name}}</a>
-            </div>
-            {% endfor %}
-            {% else %}
-            <h3>You have to login to check who is interested for this trip</h3>
-            <a href='{% url "login" %}'>Go to login page</a>
-            {% endif %}
-        </div>
-        <div class="col-lg-4 col-sm-12 mx-3 my-4">
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap
-                into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the
-                release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
-                software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-        </div>
-    </div>
-</div>
-
-
 
 <!-- Page Content -->
 <div class="container">
@@ -121,9 +28,26 @@ Travel to {{object.country|capfirst}}
             <hr>
 
             <!-- Date/Time -->
-            <p>Posted on {{object.timestamp}}</p>
-            <p>Starts at :{{object.start}}<br>Ends at: {{object.end}}</p>
+            <div class="row ">
+                <div class="col-md-6">
+                    <p>Posted on {{object.timestamp}}</p>
+                    <p><strong>Starts at :{{object.start}}<br>Ends at: {{object.end}}</strong></p>
+                </div>
+                <div class="col-md-6 col-sm-4 mb-3">
+                    <form method="POST" action='{% url "travel:adventure-join"  unique_id=object.unique_id %}'>
+                        {% csrf_token %}
+                        {% if request.user in object.users.all %}
+                        <button class="btn btn-outline-secondary btn-lg my-5 mx-auto">Cancel Registration</button>
+                        {% else %}
+                        <button class="btn btn-outline-secondary btn-lg my-5 mx-auto">Join to this adventure</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+
             <hr>
+
 
             <!-- Preview Image -->
             <img class="img-fluid rounded" src="{{object.image.url}}" alt="{{object.image}}" height=800px; width=500px;>
@@ -197,9 +121,9 @@ Travel to {{object.country|capfirst}}
                     <li class="page-item"> <a href="?page={{ comments.previous_page_number }}"
                             class="page-link">previous</a></li>
                     {% endif %}
-                    <span class="current">
-                        <li class="page-item"> Page {{ comments.number }} of {{ comments.paginator.num_pages }}.</li>
-                    </span>
+                    <li class="page-link disabled"> Page {{ comments.number }} of
+                        {{ comments.paginator.num_pages }}.
+                    </li>
                     {% if comments.has_next %}
                     <li class="page-item"><a href="?page={{ comments.next_page_number }}" class="page-link">next</a>
                     </li>
