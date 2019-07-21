@@ -10,13 +10,13 @@ from django.db.models import Q
 
 # my apps
 from .models import Adventure, Destination_comment
-from .forms import Comment_Form
+from .forms import Comment_Form, Create_form
 from profiles.models import UserProfile
 from actions.utils import create_action
 
 
 class ListDestinationView(ListView):
-    template_name = 'travel/List-destinations.html'
+    template_name = 'travel/list-destinations.html'
 
     def get_queryset(self, *args, **kwargs):
         q = self.request.GET.get('q')
@@ -34,7 +34,7 @@ class ListDestinationView(ListView):
 
 
 class DetailDestinationView(FormMixin, DetailView):
-    template_name = "travel/Detail-destination.html"
+    template_name = "travel/detail-destination.html"
     model = Adventure
     form_class = Comment_Form
 
@@ -43,7 +43,6 @@ class DetailDestinationView(FormMixin, DetailView):
         unique_id = self.kwargs.get('unique_id')
         try:
             instance = Adventure.objects.get(unique_id=unique_id)
-            print(instance)
             if request.user.is_authenticated:
                 create_action(request.user, 'Viewed destination', instance)
         except Adventure.DoesNotExist:
@@ -77,12 +76,10 @@ class DetailDestinationView(FormMixin, DetailView):
         if self.request.user.is_authenticated:
             form = self.get_form()
             if form.is_valid():
-                print(form)
                 destination = self.get_object()
                 new_comment = form.save(commit=False)
                 new_comment.post = destination
                 new_comment.user = self.request.user
-                print(new_comment)
                 new_comment.save()
                 return self.form_valid(new_comment)
             else:
@@ -97,30 +94,35 @@ class DetailDestinationView(FormMixin, DetailView):
 
 def AdventureJoin(request, unique_id):
     if request.user.is_authenticated:
-        query = Adventure.objects.filter(unique_id=unique_id)
-        if query.exists():
-            obj = query.first()
-            if request.user != obj.author:
-                filt = obj.users.all()
-                if request.user not in filt:
-                    obj.users.add(request.user)
-                    create_action(request.user, 'Enrolled In Destination', obj)
-                    messages.success(request, 'You successfully enrolled')
-                elif request.user in filt:
-                    messages.warning(
-                        request, 'You successfully canceled the registration')
-                    create_action(
-                        request.user, 'Removed From Destination', obj)
-                    obj.users.remove(request.user)
+        joined = Adventure.objects.join(request, unique_id)
+        if joined:
+            messages.success(request, 'You successfully enrolled')
+        else:
+            messages.warning(
+                request, 'You successfully canceled the registration')
     else:
         return redirect('login')
     return redirect('travel:destination-detail', unique_id=unique_id)
 
 
+def create_destination_view(request):
+    if request.user.is_authenticated:
+        form = Create_form(request.POST or None)
+        if form.is_valid():
+            # get the instance that the form created
+            instance = form.instance
+            instance.author = request.user
+            instance.save()
+            return redirect('travel:destination-detail', unique_id=instance.unique_id)
+        else:
+            form = Create_form()
+    return render(request, "travel/create-destination.html", {'form': form})
+
+
 class DeleteDestinationView(DeleteView):
     model = Adventure
-    template_name = 'travel/Delete-destination.html'
-    success_url = 'travel/List-destinations.html'
+    template_name = 'travel/delete-destination.html'
+    success_url = 'travel/list-destinations.html'
 
     def dispatch(self, *args, **kwargs):
         if self.request.user.is_authenticated:

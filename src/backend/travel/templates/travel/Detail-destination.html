@@ -50,8 +50,9 @@ Travel to {{object.country|capfirst}}
 
 
             <!-- Preview Image -->
+            {% if object.image %}
             <img class="img-fluid rounded" src="{{object.image.url}}" alt="{{object.image}}" height=800px; width=500px;>
-
+            {% endif %}
             <hr>
 
             <!-- Post Content -->

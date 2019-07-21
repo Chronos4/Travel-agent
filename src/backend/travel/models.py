@@ -1,11 +1,12 @@
-from django.db import models
-from django.conf import settings
-from django.db.models.signals import pre_save
-from backend.utilities import unique_id_generator
 import datetime
-from django.urls import reverse
 import pycountry
+from django.conf import settings
+from django.db import models
+from django.db.models.signals import pre_save
 from django.utils.text import slugify
+from django.urls import reverse
+from actions.utils import create_action
+from backend.utilities import unique_id_generator
 # Create your models here.
 
 User = settings.AUTH_USER_MODEL
@@ -24,19 +25,43 @@ continent_choices = [
 countries = [(x.name, x.name) for x in pycountry.countries]
 
 
+class AdventureManager(models.Manager):
+
+    def join(self, request, unique_id):
+        if request.user.is_authenticated:
+            query = Adventure.objects.filter(unique_id=unique_id)
+            if query.exists():
+                obj = query.first()
+                if request.user != obj.author:
+                    filt = obj.users.all()
+                    if request.user not in filt:
+                        obj.users.add(request.user)
+                        create_action(
+                            request.user, 'Enrolled In Destination', obj)
+                        return True
+                    elif request.user in filt:
+                        create_action(
+                            request.user, 'Removed From Destination', obj)
+                        obj.users.remove(request.user)
+                        return False
+
+
 class Adventure(models.Model):
     unique_id = models.CharField(max_length=150, blank=True, null=True)
     users = models.ManyToManyField(User, related_name="candidates")
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="author", blank=True, null=True)
-    # continent = models.CharField(max_length=150, choices=continent_choices)
+    #continent = models.CharField(max_length=150, choices=continent_choices)
     country = models.CharField(max_length=150, choices=countries)
     image = models.ImageField(upload_to='destinations', blank=True, null=True)
     town = models.CharField(max_length=150)
+    commentaries = models.TextField(blank=True,null=True)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     start = models.DateField(default=datetime.datetime.now)
     end = models.DateField(default=datetime.datetime.now)
     active = models.BooleanField(default=True)
+
+    objects = AdventureManager()
 
     def __str__(self):
         return f'{self.unique_id}'
@@ -53,14 +78,6 @@ def create_id(sender, instance, *args, **kwargs):
 
 pre_save.connect(create_id, sender=Adventure)
 
-
-# def check_timezones(sender, instance, *args, **kwargs):
-#     if instance:
-#         if instance.start < datetime.datetime.now().date():
-#             raise ValueError('An error occured check the date')
-
-
-# pre_save.connect(check_timezones, sender=Adventure)
 
 class Destination_comment(models.Model):
     post = models.ForeignKey(
