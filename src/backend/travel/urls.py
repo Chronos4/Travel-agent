@@ -4,7 +4,7 @@ from .views import (
     ListDestinationView,
     DetailDestinationView,
     AdventureJoin,
-    DeleteDestinationView)
+    delete_destination_view)
 
 app_name = 'travel'
 
@@ -14,6 +14,6 @@ urlpatterns = [
          name="destination_create"),
     path('<unique_id>', DetailDestinationView.as_view(), name="destination-detail"),
     path('<unique_id>/join', AdventureJoin, name="adventure-join"),
-    path('<unique_id>/delete', DeleteDestinationView.as_view(),
+    path('<unique_id>/delete', delete_destination_view,
          name="destination-delete"),
 ]

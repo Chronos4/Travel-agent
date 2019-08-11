@@ -1,5 +1,6 @@
 from .models import UserProfile
 from django import forms
+from images.models import Image
 
 
 class ProfileForm(forms.ModelForm):
@@ -16,3 +17,10 @@ class ProfileForm(forms.ModelForm):
         model = UserProfile
         fields = '__all__'
         exclude = ('user', 'active')
+
+
+class PhotoUploadForm(forms.ModelForm):
+
+    class Meta:
+        model = Image
+        fields = ['image']

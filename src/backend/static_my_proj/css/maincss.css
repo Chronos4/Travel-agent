@@ -1,4 +1,7 @@
 
+body{
+    font-family: 'Roboto', sans-serif;
+}
 nav .search-bar{
     margin-right:50px;
 }
@@ -12,4 +15,20 @@ nav .search-bar{
 #search-button:hover{
     background-color: rgb(78, 38, 141);
     color:white;
+}
+
+.create-destination-container{
+    border: 2px dotted black;
+    margin:auto;
+    width:60%;
+    margin:auto;
+}
+
+#town-field,#commentaries-field{
+    width:80%;
+    margin:auto;
+}
+#country-field{
+    width:25%;
+    margin:auto;
 }

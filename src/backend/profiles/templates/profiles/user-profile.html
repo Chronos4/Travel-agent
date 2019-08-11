@@ -18,19 +18,31 @@
             <h5>Followers:{{user.followers.count}}</h5>
             <h5>Following:{{user.following.count}}</h5>
             <br />
-            <a href="#" class="btn btn-outline-secondary">About</a><br>
+            <form action="{% url 'profiles:photo-upload' slug=profile.user.slug %}" method="POST"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                {{photo_form}}
+                <button type="submit" class="btn btn-success">Upload photo</button>
+            </form>
             {% if not request.user == user %}
-            {% if request.user in user.followers.all %}
-            <a href="{% url 'profiles:user-follow'  slug=user.slug %}" class="btn btn-outline-primary my-3">UnFollow</a>
-            {% else %}
-            <a href="{% url 'profiles:user-follow'  slug=user.slug %}" class="btn btn-outline-primary my-3">Follow</a>
-            {% endif  %}
+            <form method="post" action="{% url 'profiles:user-follow'  slug=user.slug %}">
+                {% csrf_token %}
+                {% if request.user in user.followers.all %}
+                <button class="btn btn-outline-primary" type="submit">UnFollow</button>
+                {% else %}
+                <button class="btn btn-outline-primary" type="submit">Follow</button>
+                {% endif %}
+            </form>
             {% endif %}
         </div>
         <div class="col-7 section-2 my-5">
+            <h3>{{user.first_name}} Images</h3>
+            <hr>
+            {% if user.image_set %}
             {% for image in user.image_set.all %}
-            <img src="{{image.image.url}}" width="200px;" height="200px;" style="padding:5px; border-radius:50px;">
+            <img src="{{image.image.url}}" width="150px;" height="150px;" style="padding:5px; border-radius:50px;">
             {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>
@@ -48,9 +60,7 @@
                     <div class="media-body">
                         <h4 class="mt-0 mb-1">Trip to {{destination.country}}</h4>
                         <h6>posted on {{destination.timestamp}}</h6>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                        purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                        vulputate fringilla. Donec lacinia congue felis in faucibus.
+                        <p>{{destination.commentaries|truncatewords:11}}</p>
                     </div>
                 </li>
                 {% endfor %}

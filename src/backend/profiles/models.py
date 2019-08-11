@@ -42,7 +42,7 @@ class UserProfile(models.Model):
     hobbies = models.CharField(max_length=1000, blank=True, null=True)
     places_been = models.TextField(blank=True, null=True)
     places_to = models.TextField(blank=True, null=True)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.user.email} profile'

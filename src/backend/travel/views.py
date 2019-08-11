@@ -32,6 +32,20 @@ class ListDestinationView(ListView):
             query = Adventure.objects.filter(active=True)
         return query
 
+    def get_context_data(self, *args, **kwargs):
+        """ Display destinations about request user preference """
+        context = super(ListDestinationView,
+                        self).get_context_data(*args, **kwargs)
+        if self.request.user.is_authenticated:
+            profile = UserProfile.objects.get(user=self.request.user)
+            if profile:
+                if profile.places_to is not None:
+                    places_want_to_travel = profile.places_to.split(",")
+                    destinations = Adventure.objects.filter(
+                        town__in=places_want_to_travel, active=True)
+                    context["preferred_destinations"] = destinations
+        return context
+
 
 class DetailDestinationView(FormMixin, DetailView):
     template_name = "travel/detail-destination.html"
@@ -59,8 +73,7 @@ class DetailDestinationView(FormMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(DetailDestinationView,
                         self).get_context_data(*args, **kwargs)
-        query = self.object.users.all().exclude(
-            email=self.object.author.email)
+        query = self.object.users.all()
         # get all the comments related to this post
         comments_list = self.object.comments.all()
         # add a paginator
@@ -107,40 +120,33 @@ def AdventureJoin(request, unique_id):
 
 def create_destination_view(request):
     if request.user.is_authenticated:
-        form = Create_form(request.POST or None)
-        if form.is_valid():
-            # get the instance that the form created
-            instance = form.instance
-            instance.author = request.user
-            instance.save()
-            return redirect('travel:destination-detail', unique_id=instance.unique_id)
-        else:
-            form = Create_form()
-    return render(request, "travel/create-destination.html", {'form': form})
+        form = Create_form()
+        if request.method == "POST":
+            form = Create_form(request.POST or None, request.FILES or None)
+            if form.is_valid():
+                # get the instance that the form created
+                instance = form.instance
+                instance.author = request.user
+                instance.save()
+                create_action(request.user, "Created new trip", instance)
+                instance.users.add(request.user)
+                return redirect('travel:destination-detail', unique_id=instance.unique_id)
+            else:
+                form = Create_form()
+        return render(request, "travel/create-destination.html", {'form': form})
+    return redirect('travel:destination-list')
 
 
-class DeleteDestinationView(DeleteView):
-    model = Adventure
-    template_name = 'travel/delete-destination.html'
-    success_url = 'travel/list-destinations.html'
-
-    def dispatch(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            query = Adventure.objects.filter(
-                unique_id=self.kwargs.get('unique_id')) or None
-            if query.exists():
-                adv = query.first()
-                if self.request.user == adv.author:
-                    create_action(self.request.user,
-                                  'Deleted Destination', adv)
-                    adv.active = False
-                    adv.save()
-                    messages.success(
-                        self.request, 'You deleted the post successfully!')
-                    return redirect('travel:destination-list')
-                else:
-                    print('error my friend')
-                    messages.error(
-                        self.request, 'You are not the author of this post to delete it!')
-                    unique_id = self.kwargs['unique_id']
-                    return redirect('travel:destination-detail', unique_id=self.kwargs.get('unique_id'))
+def delete_destination_view(request, unique_id):
+    if request.user.is_authenticated:
+        query = Adventure.objects.filter(unique_id=unique_id)
+        if query.count() == 1:
+            trip = query.first()
+            if request.user == trip.author:
+                trip.active = False
+                trip.save()
+                create_action(request.user,
+                              'Deleted Destination', trip)
+                messages.success(request, "Trip successfully deleted")
+                return redirect("travel:destination-list")
+    return render(request, "travel/list-destination.html")

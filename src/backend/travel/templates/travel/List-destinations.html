@@ -6,9 +6,49 @@ Available destinations
 {% block content %}
 <div class="container text-center my-5">
     {% if object_list %}
-    <h4>Active Trips</h4>
+    <h3>Active Trips</h3>
+    <form method="POST" action="{% url 'travel:destination_create'  %}">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">Create a trip</button>
+    </form>
     <hr>
+    {% if preferred_destinations %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h4>Destinations about your preferences</h4>
+        </div>
+        {% for object in preferred_destinations %}
+        <div class="col-lg-4 col-sm-12 col-md-6 my-3">
+            <div class="card" style="width: 18rem;">
+                {% if object.image %}
+                <a href="{{object.get_absolute_url}}">
+                    <img class="card-img-top" src="{{object.image.url}}" alt="Card image cap">
+                </a>
+                {% endif %}
+                <div class="card-body">
+                    <h5>Travel to <span style="color:red;">{{object.country|capfirst}}</span></h5>
+                    <h6 class="card-text">Organiser: <a href="#">{{object.author.full_name|capfirst}}</a></h6>
+                    <p class="card-text">Posted: {{object.timestamp|timesince}} ago</p>
+                    <hr>
+                    <p class="card-text">Starts at : {{object.start}}</p>
+                    <p class="card-text">Ends at : {{object.end}}</p>
+                    <a class="btn btn-outline-primary" href='{{object.get_absolute_url}}'>Learn more</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <hr>
+    {% endif %}
+
+
+
+
+
     <div class="row ml-4">
+        <div class="col-lg-12 text-center">
+            <h4>All destinations</h4>
+        </div>
         {% for object in object_list %}
         <div class="col-lg-4 col-sm-12 col-md-6 my-3">
             <div class="card" style="width: 18rem;">

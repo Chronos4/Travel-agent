@@ -1,5 +1,5 @@
 from django import forms
-from .models import Destination_comment, Adventure
+from .models import Destination_comment, Adventure, countries
 
 
 class Comment_Form(forms.ModelForm):
@@ -12,13 +12,17 @@ class Comment_Form(forms.ModelForm):
 
 
 class Create_form(forms.ModelForm):
+    country = forms.CharField(
+        label="Country", widget=forms.Select(choices=countries, attrs={"id": "country-field"}))
+
     town = forms.CharField(label="Town:", widget=forms.TextInput(attrs={
         "class": "form-control",
-        "cols": 1
+        "id": "town-field"
     }))
     commentaries = forms.CharField(label="Commentaries:", widget=forms.Textarea(attrs={
         "class": "form-control",
-        'rows': 3
+        'id': "commentaries-field",
+        'rows': 2,
     }))
 
     class Meta:
